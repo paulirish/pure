@@ -61,13 +61,21 @@ function fish_prompt
     set prompt $prompt "$pure_color_yellow$command_duration$pure_color_normal"
   end
 
+  # Speed up prompt for Chromium repo, by ignoring dirtyState
+  if test "$fish_prompt_last_cwd" != $current_folder
+    __maybe_toggle_dirtystate
+  end
+  # save "last" values
+  set -g fish_prompt_last_cwd $current_folder
+
+
   # Exit with code 1 if git is not available
   if not which git >/dev/null
     return 1
   end
 
   # Check if is on a Git repository
-  set -l is_git_repository (command git rev-parse --is-inside-work-tree ^/dev/null)
+  set -l is_git_repository (command git rev-parse --git-dir --is-inside-git-dir --is-bare-repository --is-inside-work-tree --short HEAD ^/dev/null)
 
   if test -n "$is_git_repository"
     set git_branch_name (__parse_git_branch)
@@ -102,6 +110,7 @@ function fish_prompt
     set prompt $prompt "$pure_color_gray$git_branch_name$git_dirty$pure_color_normal\t$pure_color_cyan$git_arrows$pure_color_normal"
   end
 
+  # Format non-Git prompt output
   set prompt $prompt "\n$color_symbol$pure_symbol_prompt$pure_color_normal "
 
   echo -e -s $prompt
