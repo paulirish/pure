@@ -8,6 +8,10 @@
 # Whether or not is a fresh session
 set -g __pure_fresh_session 1
 
+# Settings
+
+__pure_set_default pure_git_untracked_dirty true
+
 # Symbols
 
 __pure_set_default pure_symbol_prompt "❯"
@@ -81,7 +85,13 @@ function fish_prompt
     set git_branch_name (__parse_git_branch)
 
     # Check if there are files to commit
-    set -l is_git_dirty (command git status --porcelain --ignore-submodules ^/dev/null)
+    set -l untracked_flag
+
+    set -l untracked_flag "--untracked-files=no"
+    if eval $pure_git_untracked_dirty
+      set untracked_flag "--untracked-files=normal"
+    end
+    set -l is_git_dirty (command git status --porcelain $untracked_flag --ignore-submodules  ^/dev/null)
 
     if test -n "$is_git_dirty"
       set git_dirty $pure_symbol_git_dirty
