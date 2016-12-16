@@ -11,6 +11,7 @@ set -g __pure_fresh_session 1
 # Settings
 
 __pure_set_default pure_git_untracked_dirty true
+__pure_set_default pure_cmd_max_exec_time (math "1000 * 3")
 
 # Symbols
 
@@ -58,12 +59,10 @@ function fish_prompt
   if test $exit_code -ne 0
     # Symbol color is red when previous command fails
     set color_symbol $pure_color_red
-
-    # Prompt failed command execution duration
-    set command_duration (__format_time $CMD_DURATION)
-
-    set prompt $prompt "$pure_color_yellow$command_duration$pure_color_normal"
   end
+
+  # Log command duration if it took >5s
+  set prompt $prompt $pure_color_yellow (__last_command_duration) $pure_color_normal
 
   # Speed up prompt for Chromium repo, by ignoring dirtyState
   if test "$fish_prompt_last_cwd" != $current_folder

@@ -5,8 +5,7 @@ function __format_time -d "Format milliseconds to a human readable format"
   set -l hours (math "$milliseconds / 3600000 % 24")
   set -l days (math "$milliseconds / 86400000")
   set -l time
-  set -l threshold 5
-
+  
   if test $days -gt 0
     set time (command printf "$time%sd " $days)
   end
@@ -19,7 +18,7 @@ function __format_time -d "Format milliseconds to a human readable format"
     set time (command printf "$time%sm " $minutes)
   end
 
-  if test $seconds -gt $threshold
+  if test $seconds -gt 0
     set time (command printf "$time%ss " $seconds)
   end
 
