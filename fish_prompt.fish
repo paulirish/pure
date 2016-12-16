@@ -79,23 +79,18 @@ function fish_prompt
   end
 
   # Check if is on a Git repository
-  set -l is_git_repository (command git rev-parse --git-dir --is-inside-git-dir --is-bare-repository --is-inside-work-tree --short HEAD ^/dev/null)
-
-  if test -n "$is_git_repository"
+  if git rev-parse ^ /dev/null
     set git_branch_name (__parse_git_branch)
-
-    # Check if there are files to commit
-    set -l untracked_flag
-
-    set -l untracked_flag "--untracked-files=no"
-    if eval $pure_git_untracked_dirty
-      set untracked_flag "--untracked-files=normal"
+    
+    # dirty check, conditional on being in chromium repo
+    if not in_chromium_repo
+      command git diff --no-ext-diff --quiet --exit-code ^/dev/null
+      set os $status
+      if test $os -ne 0
+        set git_dirty $pure_symbol_git_dirty      
+      end
     end
-    set -l is_git_dirty (command git status --porcelain $untracked_flag --ignore-submodules  ^/dev/null)
 
-    if test -n "$is_git_dirty"
-      set git_dirty $pure_symbol_git_dirty
-    end
 
     # Check if there is an upstream configured
     command git rev-parse --abbrev-ref '@{upstream}' >/dev/null ^&1; and set -l has_upstream
@@ -126,4 +121,12 @@ function fish_prompt
   echo -e -s $prompt
 
   set __pure_fresh_session 0
+end
+
+function in_chromium_repo
+  if [ (git remote get-url origin) = "https://chromium.googlesource.com/chromium/src.git" ]
+    true
+  else
+    false
+  end
 end
