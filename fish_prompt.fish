@@ -29,6 +29,7 @@ __pure_set_default pure_color_blue (set_color blue)
 __pure_set_default pure_color_yellow (set_color yellow)
 __pure_set_default pure_color_cyan (set_color cyan)
 __pure_set_default pure_color_gray (set_color 93A1A1)
+__pure_set_default pure_color_dark_gray (set_color black)
 __pure_set_default pure_color_normal (set_color normal)
 
 function fish_prompt
@@ -51,6 +52,7 @@ function fish_prompt
   if test $__pure_fresh_session -eq 0
     set prompt $prompt "\n"
   end
+
 
   # Format current folder on prompt output
   set prompt $prompt "$pure_color_blue$current_folder$pure_color_normal "
@@ -112,6 +114,13 @@ function fish_prompt
 
     # Format Git prompt output
     set prompt $prompt "$pure_color_gray$git_branch_name$git_dirty$pure_color_normal\t$pure_color_cyan$git_arrows$pure_color_normal"
+  end
+
+
+ # Display username and hostname if logged in as root, in sudo or ssh session
+  set -l uid (id -u)
+  if [ \( $uid -eq 0 -o $SUDO_USER \) -o $SSH_CONNECTION ]
+      set prompt $prompt " " $pure_color_gray $USER $pure_color_dark_gray "@" (command hostname | command cut -f 1 -d ".") 
   end
 
   # Format non-Git prompt output
