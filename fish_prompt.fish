@@ -95,7 +95,7 @@ function fish_prompt
 
     # Check if there is an upstream configured
     command git rev-parse --abbrev-ref '@{upstream}' >/dev/null ^&1; and set -l has_upstream
-    if set -q has_upstream
+    if set -q has_upstream; and not in_chromium_repo
       set -l git_status (command git rev-list --left-right --count 'HEAD...@{upstream}' | sed "s/[[:blank:]]/ /" ^/dev/null)
 
       # Resolve Git arrows by treating `git_status` as an array
