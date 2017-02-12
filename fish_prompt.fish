@@ -1,5 +1,3 @@
-# vim: set ft=sh:
-
 # Pure
 # by Rafael Rinaldi
 # https://github.com/rafaelrinaldi/pure
@@ -17,7 +15,7 @@ __pure_set_default pure_cmd_max_exec_time (math "1000 * 3")
 
 __pure_set_default pure_symbol_prompt "❯"
 __pure_set_default pure_symbol_git_down_arrow "⇣"
-__pure_set_default pure_symbol_git_down_arrow "⇡"
+__pure_set_default pure_symbol_git_up_arrow "⇡"
 __pure_set_default pure_symbol_git_dirty "*"
 __pure_set_default pure_symbol_horizontal_bar "—"
 
@@ -31,6 +29,9 @@ __pure_set_default pure_color_cyan (set_color cyan)
 __pure_set_default pure_color_gray (set_color 93A1A1)
 __pure_set_default pure_color_dark_gray (set_color black)
 __pure_set_default pure_color_normal (set_color normal)
+
+# Max execution time of a process before its run time is shown when it exits
+__pure_set_default pure_command_max_exec_time 5
 
 function fish_prompt
   # Save previous exit code
@@ -65,6 +66,9 @@ function fish_prompt
 
   # Log command duration if it took >5s
   set prompt $prompt $pure_color_yellow (__last_command_duration) $pure_color_normal
+  
+  # Prompt failed command execution duration
+  set command_duration (__format_time $CMD_DURATION $pure_command_max_exec_time)
 
   # Speed up prompt for Chromium repo, by ignoring dirtyState
   if test "$fish_prompt_last_cwd" != $current_folder
@@ -103,11 +107,11 @@ function fish_prompt
       set -l git_arrow_right (command echo $git_status | cut -c 3 ^/dev/null)
 
     # If arrow is not "0", it means it's dirty
-      if test $git_arrow_left -ne "0"
+      if test $git_arrow_left != 0
         set git_arrows $pure_symbol_git_up_arrow
       end
 
-      if test $git_arrow_right -ne "0"
+      if test $git_arrow_right != 0
         set git_arrows $git_arrows$pure_symbol_git_down_arrow
       end
     end

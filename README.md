@@ -1,9 +1,9 @@
-# pure [![Fish Shell Version](https://img.shields.io/badge/fish-v2.2.0-007EC7.svg?style=flat-square)](http://fishshell.com)
+# pure [![Fish Shell Version](https://img.shields.io/badge/fish-v2.5.0-007EC7.svg?style=flat-square)](http://fishshell.com)
 
-> Port of the [`pure`](https://github.com/sindresorhus/pure) ZSH theme to Fish
+> Port of the [`pure`](https://github.com/sindresorhus/pure) ZSH theme to Fish 🐟
 
-<p align="center">
-  <img width="572" src="screenshot.png">
+<p align=center>
+  <img width=585 src=screenshot.png>
 </p>
 
 ## Install
@@ -33,23 +33,26 @@ $ omf install pure
 
 ## Features
 
+* Fully customizable
 * Display current directory tail
 * Display Git branch name
 * Display whether or not the working copy is dirty
-* Display an up arrow if there are stuff to be pushed
-* Display an down arrow if there are stuff to be pulled
+* Display ⇡ if there are stuff to be pushed
+* Display ⇣ if there are stuff to be pulled
 * Display prompt symbol in red if previous command has failed
 * Display the current folder and command when a process is running
 * Display username and host when in an SSH session
-* Display duration of failed commands (if timeout is greather than default threshold)
+* Display duration of failed process (defaults to `5`)
 
 ## Configuration
 
-```
+You can tweak pretty much everything in `pure` by overriding variables in your `config.fish` file:
+
+```fish
 # Change the prompt text
 set pure_symbol_prompt "~>"
 set pure_symbol_git_down_arrow "v"
-set pure_symbol_git_down_arrow "^"
+set pure_symbol_git_up_arrow "^"
 set pure_symbol_git_dirty "!"
 set pure_symbol_horizontal_bar "_"
 
@@ -61,6 +64,9 @@ set pure_color_green (set_color "66ff66")
 set pure_color_normal (set_color "000000")
 set pure_color_red (set_color "f820ff")
 set pure_color_yellow (set_color "1bc8c8")
+
+# Max execution time of a process before its run time is shown when it exits
+set pure_command_max_exec_time 5
 ```
 
 ## Maintainers
