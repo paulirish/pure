@@ -31,7 +31,7 @@ __pure_set_default pure_color_dark_gray (set_color black)
 __pure_set_default pure_color_normal (set_color normal)
 
 # Max execution time of a process before its run time is shown when it exits
-__pure_set_default pure_command_max_exec_time 5
+__pure_set_default pure_command_max_exec_time 1
 
 function fish_prompt
   # Save previous exit code
@@ -66,7 +66,7 @@ function fish_prompt
 
   # Log command duration if it took >5s
   set prompt $prompt $pure_color_yellow (__last_command_duration) $pure_color_normal
-  
+
   # Prompt failed command execution duration
   set command_duration (__format_time $CMD_DURATION $pure_command_max_exec_time)
 

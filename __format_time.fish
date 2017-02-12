@@ -19,7 +19,7 @@ function __format_time -d "Format milliseconds to a human readable format"
     set time (command printf "$time%sm " $minutes)
   end
 
-  if test $seconds -gt 0
+  if test $seconds -gt $threshold
     set time (command printf "$time%ss " $seconds)
   end
 
