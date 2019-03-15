@@ -3,16 +3,23 @@ function _pure_prompt_git \
 
     set --local is_git_repository (command git rev-parse --is-inside-work-tree 2>/dev/null)
 
-    if test -n "$is_git_repository"; and not in_chromium_repo
-        set --local git_prompt (_pure_prompt_git_branch)(_pure_prompt_git_dirty)
-        set --local git_pending_commits (_pure_prompt_git_pending_commits)
+    # exit early if we're not in a repo
+    if not test -n "$is_git_repository"; return; end;
 
-        if test (_pure_string_width $git_pending_commits) -ne 0
-            set git_prompt $git_prompt $git_pending_commits
-        end
+    set --local git_prompt (_pure_prompt_git_branch)
 
-        echo $git_prompt
+    if in_chromium_repo
+      echo $git_prompt
+      return
     end
+
+    set git_prompt $git_prompt(_pure_prompt_git_dirty)
+    set --local git_pending_commits (_pure_prompt_git_pending_commits)
+
+    if test (_pure_string_width $git_pending_commits) -ne 0
+        set git_prompt $git_prompt $git_pending_commits
+    end
+    echo $git_prompt
 end
 
 function in_chromium_repo
