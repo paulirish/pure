@@ -8,11 +8,15 @@ function _pure_prompt_git \
 
     set --local git_prompt (_pure_prompt_git_branch)
 
-    if in_chromium_repo
-      echo $git_prompt
+    # early exit for Chromium repo, as the dirty check takes ~5s
+    # see other Chromium repo hacking optimizations: https://github.com/paulirish/dotfiles/blob/master/setup-a-new-machine.sh#L214
+    set --local repoUrl (git config --get remote.origin.url)
+    if echo $repoUrl | grep "chromium.googlesource.com" -q
+      echo "$git_prompt$pure_color_git_dirty ⁂"
       return
     end
 
+  
     set git_prompt $git_prompt(_pure_prompt_git_dirty)
     set --local git_pending_commits (_pure_prompt_git_pending_commits)
 
@@ -22,13 +26,3 @@ function _pure_prompt_git \
     echo $git_prompt
 end
 
-function in_chromium_repo
-  if not git remote get-url origin > /dev/null ^&1
-    echo "GIT but no origin wtf" # return ?
-  end
-  if [ (git remote get-url origin) = "https://chromium.googlesource.com/chromium/src.git" ]
-    true
-  else
-    false
-  end
-end
